@@ -1,0 +1,317 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: ggrenuy
+ * Date: 10.05.15
+ * Time: 17:31
+ */
+
+function round0_menu () {
+    $items['round0'] = array(
+
+        'title' => 'Round 0 Menu Example',
+        'page callback' => 'round0_example',
+        'access callback' => TRUE,
+
+    );
+    return $items;
+}
+
+/**
+ * @param $form
+ * @param $form_state
+ * @return mixed
+ */
+function round0_testing_form ($form, &$form_state) {
+
+    // Display page 2 if $form_state['page_num'] == 2
+    if (!empty($form_state['page_num']) && $form_state['page_num'] == 2) {
+        return round0_testing_form_two ($form, $form_state);
+    }
+
+    // Otherwise we build page 1.
+    $form_state['page_num'] = 1;
+
+    $form['description'] = array(
+        '#type' => 'item',
+        '#title' => t('Small calculation'),
+    );
+
+    $form['first'] = array(
+        '#type' => 'textfield',
+        '#title' => t('First name'),
+        '#required' => TRUE,
+        '#attributes' => array('placeholder' => 'Please enter your first name.'),
+        '#size' => 40,
+        '#maxlength' => 40,
+        '#default_value' => !empty($form_state['values']['first']) ? $form_state['values']['first'] : '',
+    );
+
+    $form['last'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Last name'),
+        '#attributes' => array('placeholder' => 'Please enter your last name.'),
+        '#size' => 40,
+        '#maxlength' => 40,
+        '#default_value' => !empty($form_state['values']['last']) ? $form_state['values']['last'] : '',
+    );
+
+    $form['next'] = array(
+        '#type' => 'submit',
+        '#value' => 'Next >>',
+        '#submit' => array('round0_testing_form_next_submit'),
+    );
+
+    return $form;
+}
+
+function round0_testing_form_two($form, &$form_state) {
+
+    $form['#tree'] = TRUE;
+
+    $form['description'] = array(
+        '#type' => 'item',
+        '#title' => t('A form with dynamically added calculated fields'),
+    );
+
+    if (empty($form_state['num_values'])) {
+        $form_state['num_values'] = 1;
+    }
+
+    for ($i = 1; $i <= $form_state['num_values']; $i++) {
+        $form['input_data'][$i] = array(
+            '#type' => 'fieldset',
+            '#title' => t('Input_data #@num', array('@num' => $i)),
+            '#collapsible' => TRUE,
+            '#collapsed' => FALSE,
+        );
+
+        $form['input_data'][$i]['first_value'] = array(
+            '#type' => 'textfield',
+            '#title' => t('Enter first value'),
+            '#size' => 20,
+            '#maxlength' => 20,
+            '#required' => TRUE,
+            '#default_value' => !empty($form_state['values']['input_data'][$i]['first_value']) ? $form_state['values']['input_data'][$i]['first_value'] : '',
+        );
+        $form['input_data'][$i]['operand'] = array(
+            '#type' => 'select',
+            '#title' => t('Select operation'),
+            '#options' => array(
+                0 => '+',
+                1 => '-',
+                2 => '*',
+                3 => '/',
+            ),
+            '#default_value' => !empty($form_state['values']['input_data'][$i]['operand']) ? $form_state['values']['input_data'][$i]['operand'] : 0,
+            '#required' => TRUE,
+        );
+        $form['input_data'][$i]['second_value'] = array(
+            '#type' => 'textfield',
+            '#title' => t('Enter second value'),
+            '#required' => TRUE,
+            '#default_value' => !empty($form_state['values']['input_data'][$i]['second_value']) ? $form_state['values']['input_data'][$i]['second_value'] : '',
+        );
+    }
+
+    $form['add'] = array(
+        '#type' => 'submit',
+        '#value' => t('Add another'),
+        '#submit' => array('round0_testing_form_two_add'),
+    );
+
+
+    if ($form_state['num_values'] > 1) {
+        $form['remove'] = array(
+            '#type' => 'submit',
+            '#value' => t('Remove latest'),
+            '#submit' => array('round0_testing_form_two_remove'),
+
+            '#limit_validation_errors' => array(),
+        );
+    }
+
+    $form['submit'] = array(
+        '#type' => 'submit',
+        '#value' => t('Submit'),
+        '#submit' => array('round0_testing_form_two_submit'),
+    );
+    $form['back'] = array(
+        '#type' => 'submit',
+        '#value' => t('<< Back'),
+        '#submit' => array('round0_testing_form_two_back'),
+
+    );
+    return $form;
+}
+
+function round0_testing_form_two_add($form, &$form_state) {
+
+    $form_state['num_values']++;
+    $form_state['rebuild'] = TRUE;
+}
+
+/**
+ * Submit handler for "Remove name" button on form_example_tutorial_9().
+ *
+ * @ingroup form_example
+ */
+function round0_testing_form_two_remove($form, &$form_state) {
+    if ($form_state['num_values'] > 1) {
+        $form_state['num_values']--;
+    }
+
+    $form_state['rebuild'] = TRUE;
+}
+
+function round0_testing_form_validate ($form, &$form_state) {
+  if (strlen($form_state['values']['first']) < 3) {
+    form_set_error('first', t('Enter name more than 2 letters'));
+  }
+}
+
+/**
+ * @param $form
+ * @param $form_state
+ */
+function round0_testing_form_next_submit ($form, &$form_state) {
+    $form_state['page_values'][1] = $form_state['values'];
+
+    if (!empty($form_state['page_values'][2])) {
+        $form_state['values'] = $form_state['page_values'][2];
+    }
+
+    $form_state['page_num'] = 2;
+    $form_state['rebuild'] = TRUE;
+}
+
+function round0_testing_form_two_back($form, &$form_state) {
+    $form_state['page_values'][2] = $form_state['values'];
+    $form_state['values'] = $form_state['page_values'][1];
+    $form_state['page_num'] = 1;
+    $form_state['rebuild'] = TRUE;
+}
+
+/**
+ * @param $form
+ * @param $form_state
+ */
+function round0_testing_form_two_submit($form, &$form_state) {
+
+    $page_one_values = $form_state['page_values'][1];
+    drupal_set_message(t('The form has been submitted. name="@first @last"',
+        array(
+            '@first' => $page_one_values['first'],
+            '@last' => $page_one_values['last'],
+        )
+    ));
+
+
+    $output = t("Form 9 has been submitted.");
+    for ($i = 1; $i <= $form_state['num_values']; $i++) {
+        $res = '';
+        $operand='';
+        switch ($form_state['values']['input_data'][$i]['operand']) {
+            case
+            '0':
+              $res = $form_state['values']['input_data'][$i]['second_value'] + $form_state['values']['input_data'][$i]['second_value'];
+              $operand='+';
+              break;
+            case
+            '1':
+              $res = $form_state['values']['input_data'][$i]['second_value'] - $form_state['values']['input_data'][$i]['second_value'];
+              $operand='-';
+              break;
+            case
+            '2':
+              $res = $form_state['values']['input_data'][$i]['second_value'] * $form_state['values']['input_data'][$i]['second_value'];
+              $operand='*';
+              break;
+            case
+            '3':
+              $res = $form_state['values']['input_data'][$i]['second_value'] / $form_state['values']['input_data'][$i]['second_value'];
+              $operand='/';
+              break;
+        }
+        $output .= t("@num: @first_value @operand @second_value = @result",
+                array(
+                    '@num' => $i,
+                    '@first_value' => $form_state['values']['input_data'][$i]['first_value'],
+                    '@operand' => $operand,
+                    '@second_value' => $form_state['values']['input_data'][$i]['second_value'],
+                    '@result' => $res,
+                )
+            ) . ' ';
+    }
+    drupal_set_message($output);
+
+}
+
+/**
+ * @return string
+ */
+function round0_example() {
+    return drupal_get_form('round0_testing_form');
+}
+
+
+/*
+ *  hook_form_FORM_ID_alter
+ */
+
+function round0_form_search_block_form_alter(&$form, &$form_state, $form_id) {
+
+  $form ['search_block_form']['#attributes']['placeholder'] = t('Search text');
+
+}
+
+function round0_block_view_search_form_alter(&$data, $block) {
+  $data['subject'] = t('Search_block');
+}
+
+
+function round0_block_info() {
+
+  $blocks['round0_first_block'] = array(
+    'info' => t('Round 0 first block'),
+    'status' => TRUE,
+    'region' => 'sidebar_first',
+  );
+
+  return $blocks;
+}
+
+function round0_block_configure($delta = '') {
+  $form = array();
+
+  if ($delta == 'round0_first_block') {
+
+    $form['config_string'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Config_string'),
+      '#size' => 60,
+      '#default_value' => variable_get('round0_config_string', ''),
+    );
+  }
+  return $form;
+}
+
+function round0_block_save($delta = '', $edit = array()) {
+
+  if ($delta == 'round0_first_block') {
+    variable_set('round0_config_string', $edit['config_string']);
+  }
+}
+
+function round0_block_view($delta = '') {
+
+  switch ($delta) {
+    case 'round0_first_block':
+      $block['subject'] = t('Example: Round 0 first block');
+      $block['content'] = 'On configuration page set: '.variable_get('round0_config_string', 'Nothing yet.');
+      break;
+
+
+  }
+  return $block;
+}

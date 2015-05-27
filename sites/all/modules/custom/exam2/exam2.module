@@ -1,0 +1,22 @@
+<?php
+function exam2_callback_function($form,$form_state) {
+  drupal_set_message(t('The form has been submitted with hook. third="@third"',
+    array(
+      '@third' => $form_state['values']['third'],
+    )
+  ));
+}
+
+function exam2_form_exam_form_alter(&$form, &$form_state, $form_id) {
+  $form['third'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Third field'),
+    '#required' => TRUE,
+    '#size' => 20,
+    '#maxlength' => 40,
+  );
+  $form['submit']['#weight'] = 50;
+  $form['#submit'][]='exam2_callback_function';
+  return $form;
+}
+

@@ -1,0 +1,94 @@
+<?php
+function exam_menu () {
+  $items['exam'] = array(
+
+  'title' => 'Menu exam',
+  'page callback' => 'exam_fun',
+  'access callback' => TRUE,
+
+  );
+  return $items;
+}
+
+function exam_form ($form, &$form_state) {
+  $form['first'] = array(
+    '#type' => 'textfield',
+    '#title' => t('First field'),
+    '#required' => TRUE,
+    '#size' => 20,
+    '#maxlength' => 40,
+  );
+  $form['second'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Second field'),
+    '#required' => TRUE,
+    '#size' => 20,
+    '#maxlength' => 40,
+  );
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Send',
+  );
+  return $form;
+}
+
+function exam_form_submit($form, &$form_state) {
+  drupal_set_message(t('The form has been submitted. first="@first second=@last"',
+    array(
+      '@first' => $form_state['values']['first'],
+      '@last' => $form_state['values']['second'],
+    )
+  ));
+}
+
+
+function exam_fun() {
+  return drupal_get_form('exam_form');
+}
+
+function exam_block_info() {
+
+  $blocks['Exam_block'] = array(
+    'info' => t('My exam block'),
+    'status' => TRUE,
+    'region' => 'sidebar_first',
+  );
+
+  return $blocks;
+}
+
+function exam_block_view($delta = '') {
+
+  switch ($delta) {
+    case 'Exam_block':
+      $form_block=drupal_get_form('exam_form');
+      $block['subject'] = t('My exam block');
+      $block['content'] = theme('exam_block_content', array('text' => 'My first template','content' => drupal_render($form_block)));
+      break;
+
+
+  }
+  return $block;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function exam_theme() {
+  return array(
+    'exam_block_content' => array(
+      'data' => array('text' => NULL,'content'=> NULL),
+    ),
+  );
+}
+
+function theme_exam_block_content($data) {
+
+  $output = '<div class="custom-text">'.$data['text'].'</div>';
+  $output .= '<div class="custom-content-wrap">';
+  $output .= $data['content'];
+  $output .= '</div>';
+
+  return $output;
+}
+
