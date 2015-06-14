@@ -1,0 +1,53 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: ggrenuy
+ * Date: 10.05.15
+ * Time: 17:31
+ */
+
+function round2_menu () {
+    $items['round2'] = array(
+        'title' => 'Round 2 theme function',
+        'page callback' => 'round2_example',
+        'access callback' => TRUE,
+    );
+    return $items;
+}
+
+function round2_theme() {
+    return array(
+        'round2' => array(
+            'variables' => array(),
+        ),
+        'round2_tpl' => array(
+            'template' => 'round2',
+            'list' => '',
+        ),
+    );
+}
+
+function theme_round2($variables) {
+    if (empty($variables)) {
+        return '';
+    }
+
+    $output = theme_item_list($variables);
+
+    return $output;
+}
+
+/**
+ * @return string
+ */
+function round2_example() {
+    $round2['title'] = 'Round 2 theme function';
+    $round2['items'] = array('first element', 'second element', 'thirt element');
+    $round2['type'] = 'ul';
+    $round2['attributes'] = array();
+
+    $ret = theme('round2', $round2);
+
+
+    return theme('round2_tpl', array( 'list' => $ret));
+}
