@@ -15,6 +15,25 @@ function round2_menu () {
     return $items;
 }
 
+function round2_form ($form, &$form_state) {
+  $form['round2'] = array(
+    '#type' => 'select',
+    '#title' => t('Select'),
+    '#options' => array(
+        1 => t('First'),
+        2 => t('Second'),
+        3 => t('Third'),
+    ),
+    '#default_value' => 1,
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Send',
+  );
+  return $form;
+}
+
 function round2_theme() {
     return array(
         'round2' => array(
@@ -32,7 +51,9 @@ function theme_round2($variables) {
         return '';
     }
 
-    $output = theme_item_list($variables);
+
+    $output = drupal_get_form('round2_form');
+    $output = render($output);
 
     return $output;
 }
@@ -41,9 +62,8 @@ function theme_round2($variables) {
  * @return string
  */
 function round2_example() {
-    $round2['title'] = 'Round 2 theme function';
-    $round2['items'] = array('first element', 'second element', 'thirt element');
-    $round2['type'] = 'ul';
+    $round2['#id'] = 'round_2';
+    $round2['#options'] = array('first element', 'second element', 'thirt element');
     $round2['attributes'] = array();
 
     $ret = theme('round2', $round2);
