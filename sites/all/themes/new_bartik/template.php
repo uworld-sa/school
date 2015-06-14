@@ -83,3 +83,18 @@ function new_bartik_form_select_options($element, $choices = NULL) {
     }
     return $options;
 }
+
+function new_bartik_preprocess_node(&$variables) {
+	if (module_exists('context')) {
+		$contexts = context_active_contexts();
+		
+
+		if ( isset($contexts['desktop'])) {
+			$variables ['theme_hook_suggestions'][] = 'node__' . $variables['type'] . '__desktop';
+		}
+		if ( isset($contexts['mobile'])) {
+			$variables ['theme_hook_suggestions'][] = 'node__' . $variables['type'] . '__mobile';
+		}
+	}
+
+}
