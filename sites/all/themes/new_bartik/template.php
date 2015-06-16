@@ -5,19 +5,6 @@
  * Date: 09.06.15
  * Time: 23:17
  */
-/*
-function new_bartik_theme_registry_alter(&$theme_registry) {
-    $theme_path = path_to_theme();
-
-    // Radios.
-    if (isset($theme_registry['select'])) {
-        $theme_registry['select']['type'] = 'theme';
-        $theme_registry['select']['theme path'] = drupal_get_path('theme','new_bartik');
-        $theme_registry['select']['template'] = drupal_get_path('theme','new_bartik') . '/templates/fields/field--type-select';
-        unset($theme_registry['select']['function']);
-    }
-}
-*/
 
 function new_bartik_select($variables) {
     $element = $variables['element'];
