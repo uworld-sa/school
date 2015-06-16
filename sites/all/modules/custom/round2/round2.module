@@ -47,10 +47,6 @@ function round2_theme() {
 }
 
 function theme_round2($variables) {
-    if (empty($variables)) {
-        return '';
-    }
-
 
     $output = drupal_get_form('round2_form');
     $output = render($output);
