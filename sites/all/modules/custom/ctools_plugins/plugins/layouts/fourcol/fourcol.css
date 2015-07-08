@@ -1,0 +1,26 @@
+
+.panel-4col { 
+/*  overflow: hidden;  */
+}
+
+.panel-4col .panel-col { 
+  float: left; 
+  width: 25%; 
+}
+* html .panel-4col .panel-col {
+  width: 24.9%;
+}
+
+.panel-4col .panel-col .inside { 
+  margin: 0 .5em 1em 0;
+}
+
+
+#panels-edit-display .panel-pane,
+#panels-edit-display .helperclass {
+  margin: .5em;
+}
+
+.panel-4col .panel-separator {
+  margin: 0 0 1em 0;
+}
