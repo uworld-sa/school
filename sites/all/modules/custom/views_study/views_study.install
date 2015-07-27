@@ -1,0 +1,32 @@
+<?php
+function views_study_schema(){
+
+    /*****************************Выбор типа визы***************************************/
+
+    $schema['visa_service_order'] = array(
+        'description' => 'Visa order',
+        'fields' => array(
+            'order_id' => array(
+                'description' => t('The primary identifier'),
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+            ),
+            'order_uid' => array(
+                'type' => 'int',
+                'length' => 11,
+                'not null' => FALSE,
+            ),
+            'order_hash' => array(
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => TRUE,
+                'default' => '',
+            )
+
+        ),
+        'primary key' => array('order_id'),
+    );
+
+    return $schema;
+}
