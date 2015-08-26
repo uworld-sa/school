@@ -1,0 +1,11 @@
+name = Ticket
+description = Ticket entity.
+core = 7.x
+package = Ticket
+
+dependencies[] = field
+dependencies[] = entity
+
+configure = admin/structure/ticket/manage
+
+files[] = classes/TicketController.inc

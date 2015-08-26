@@ -1,0 +1,54 @@
+<?php
+/**
+ * @file
+ * Install for a basic entity - need to create the base table for our entity.
+ * This table can have as many columns as you need to keep track of
+ * entity-specific data that will not be added via attached fields.
+ * The minimum information for the entity to work is an id and an entity name.
+ */
+
+/**
+ * Implements hook_schema().
+ *
+ * @ingroup entity_example
+ */
+function ticket_schema() {
+  $schema = array();
+  $schema['ticket'] = array(
+    'description' => 'The base table for our ticket.',
+    'fields' => array(
+      'tid' => array(
+        'description' => 'Primary key of the ticket.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'uid' => array(
+        'description' => 'Owner of the ticket.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'seats' => array(
+        'description' => 'Seats number for the ticket.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'created' => array(
+        'description' => 'The Unix timestamp of the entity creation time.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'indexes' => array(
+      'uid' => array('uid'),
+      'seats' => array('seats'),
+      'created' => array('created'),
+    ),
+    'primary key' => array('tid'),
+  );
+
+  return $schema;
+}

@@ -1,0 +1,3 @@
+name = 'Test ctools'
+description = "Writing custom module using ctools"
+core = 7.x

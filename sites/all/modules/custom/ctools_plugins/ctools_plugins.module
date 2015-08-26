@@ -4,5 +4,7 @@ function ctools_plugins_ctools_plugin_directory($owner, $plugin_type) {
   // We'll be nice and limit scandir() calls.
   if ($owner == 'panels' && ($plugin_type == 'layouts')) {
     return 'plugins/layouts';
+  } elseif ($owner == 'ctools' && isset($plugin_type)) {
+  	return 'plugins/' . $plugin_type;
   }
 }

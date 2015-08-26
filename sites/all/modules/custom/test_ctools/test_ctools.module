@@ -1,0 +1,89 @@
+<?php
+
+function test_ctools_menu () {
+
+	$items= array();
+
+	$items['test_ctools'] = array(
+    'title' => 'Test ctools',
+    'page callback' => 'test_ctools_page',
+    'access callback' => TRUE,
+    'type' => MENU_NORMAL_ITEM,
+	);
+	$items['test_ctools/%ctools_js/hello'] = array(
+    'title' => 'Hello World',
+    'page callback' => 'test_ctools_hello',
+    'page arguments' => array(1),
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+	);
+  $items['test_ctools/%ctools_js/modal-test-callback'] = array(
+    'page callback' => 'test_ctools_modal_callback',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+	 return $items;
+}
+
+function test_ctools_modal_callback() {
+  ctools_include('ajax');
+  ctools_include('modal');
+  ctools_modal_render(t('Modal Window Title'),t('Hello World'));
+}
+
+function test_ctools_page() {
+
+	// Include the CTools tools that we need.
+	ctools_include('modal');
+  ctools_include('ajax');
+  ctools_modal_add_js();
+
+  $output = ctools_ajax_text_button(t('Hello world!'), "test_ctools/nojs/hello", t('Replace text with "hello world"'));
+
+  $output .= '<div id="ctools_ajax-sample">Строка замены</div>';
+
+  // Create a drop down menu
+	$links = array();
+	$links[] = array('title' => t('Link 1'), 'href' => $_GET['q']);
+	$links[] = array('title' => t('Link 2'), 'href' => $_GET['q']);
+	$links[] = array('title' => t('Link 3'), 'href' => $_GET['q']);
+
+	$output .= '<h3>' . t('Drop Down Menu') . '</h3>';
+  $output .= theme('ctools_dropdown', array('title' => t('Click to Drop Down'), 'links' => $links));
+
+  $output .= '<h3>' . t('Drop Down Menu') . '</h3>';
+	$output .= theme('links__ctools_dropbutton', array('title' => t('Click to Drop Down'), 'links' => $links));
+
+  // Create a collapsible div
+  $handle = t('Click to Collapse');
+  $content = 'Nulla ligula ante, aliquam at adipiscing egestas, varius vel arcu. Etiam laoreet elementum mi vel consequat. Etiam scelerisque lorem vel neque consequat quis bibendum libero congue. Nulla facilisi. Mauris a elit a leo feugiat porta. Phasellus placerat cursus est vitae elementum.';
+  $output .= '<h3>'. t('Collapsible Div') .'</h3>';
+  $output .= theme('ctools_collapsible', array('handle' => $handle, 'content' => $content, 'collapsed' => FALSE));
+
+
+    
+    
+  $output .= ctools_modal_text_button(t('Click Here!'), 'test_ctools/nojs/modal-test-callback', t('Click Here!'));
+
+  return $output;
+}
+
+/**
+ * Returns a "take it all over" hello world style request.
+ */
+function test_ctools_hello($js = NULL) {
+  $output = t('Hello World');
+  if ($js) {
+    ctools_include('ajax');
+    $commands = array();
+    $commands[] = ajax_command_html('#ctools_ajax-sample', $output);
+    $commands[] = ctools_ajax_command_attr('#ctools_ajax-sample', 'rel', 'changed');
+    print ajax_render($commands); // this function exits.
+    exit;
+  }
+  else {
+    return $output;
+  }
+}
+
