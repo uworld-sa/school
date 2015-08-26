@@ -1,0 +1,11 @@
+<?php
+/**
+ * Implements hook_views_api().
+ */
+function views_study_views_api() {
+  return array(
+    'api' => 3,
+  );
+}
+
+

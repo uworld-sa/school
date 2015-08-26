@@ -1,0 +1,5 @@
+name = Writing views handlers
+core = 7.x
+
+files[] = includes/views/views_study_handler_handlername.inc
+files[] = includes/views/views_study_handler_filter_numeric_greater_5.inc
