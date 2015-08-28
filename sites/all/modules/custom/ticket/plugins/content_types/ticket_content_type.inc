@@ -24,7 +24,12 @@ function ticket_content_type_render($subtype, $conf, $panel_args, $context) {
   
   $block = new stdClass();
   $block->module  = 'ticket';
-  $block->content = drupal_get_form('ticket_form', $entity,$url_permission);
+  $form_state['build_info']['args'] = array($entity);
+  $form_state['conf'] = $url_permission;
+  $form = drupal_build_form('ticket_form', $form_state);
+  //$form = drupal_build_form('ticket_form', $entity, $url_permission);
+  $block->content = $form;
+  //$block->content = drupal_get_form('ticket_form', $entity,$url_permission);
 
   return $block;
 }
@@ -58,5 +63,18 @@ function ticket_content_type_edit_form_submit($form, &$form_state) {
     if (!empty($form_state['values'][$key])) {
       $form_state['conf'][$key] = $form_state['values'][$key];
     }
+  }
+}
+
+function ticket_form_ticket_form_alter(&$form, &$form_state, $form_id){
+  $form ['#submit'][] = 'ticket_content_type_submit';
+}
+
+function ticket_content_type_submit($form, &$form_state){
+
+  $path = $form_state['conf'];
+
+  if ($path != '') {
+    $form_state['redirect'] = $path;
   }
 }
