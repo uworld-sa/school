@@ -223,11 +223,7 @@ function ticket_add() {
   return drupal_get_form('ticket_form', $entity);
 }
 
-function ticket_form($form, &$form_state, $entity, $url_permission = '') {
-  $form['url_permission'] = array(
-    '#type' => 'hidden',
-    '#value' => $url_permission,
-  );
+function ticket_form($form, &$form_state, $entity) {
 
   $form['seats'] = array(
     '#type' => 'textfield',
@@ -274,10 +270,8 @@ function ticket_form_submit($form, &$form_state) {
 
   $entity = ticket_save($entity);
 
-  if ($is_new == FALSE || !drupal_valid_path($form['url_permission']['#value'])) {
+  if ($is_new == FALSE) {
     $form_state['redirect'] = url('ticket/' . $tid);
-  } else {
-    $form_state['redirect'] = url($form['url_permission']['#value']);
   }
 
 
